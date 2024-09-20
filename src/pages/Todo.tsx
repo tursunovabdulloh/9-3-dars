@@ -2,7 +2,9 @@ import { useState } from "react";
 import { TiDocumentDelete } from "react-icons/ti";
 
 interface Todo {
+  id: number;
   text: string;
+  date: string;
 }
 
 function Todo() {
@@ -11,13 +13,21 @@ function Todo() {
 
   const addTodo = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newTodo.trim() !== "") {
-      setTodos([...todos, { text: newTodo }]);
-      setNewTodo("");
-    }
+    if (newTodo.trim() !== "") return;
+
+    const date = new Date().toLocaleString();
+    let NewTodo: Todo = {
+      id: Date.now(),
+      text: newTodo,
+      date: date,
+    };
+    setTodos([...todos, NewTodo]);
+    setNewTodo("");
   };
 
-  const deleteTodo = () => {};
+  const deleteTodo = (id: number) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
 
   return (
     <div className="container ">
@@ -37,6 +47,7 @@ function Todo() {
             />
             <button
               type="submit"
+              onClick={addTodo}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
             >
               Add
@@ -47,7 +58,10 @@ function Todo() {
             <ul className=" list-disc pl-6 space-y-2 ">
               {todos.map((todo, index) => (
                 <div className="flex items-center gap-2">
-                  <TiDocumentDelete className="bg-red-100 rounded-sm" />
+                  <TiDocumentDelete
+                    onClick={() => deleteTodo(todo.id)}
+                    className="bg-red-100 rounded-sm"
+                  />
                   <li
                     key={index}
                     className="w-full bg-gray-100 px-4 py-2 rounded-lg text-gray-700 shadow-sm"

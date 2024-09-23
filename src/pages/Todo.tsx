@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 
 interface Todo {
@@ -10,6 +10,19 @@ interface Todo {
 function Todo() {
   const [newTodo, setNewTodo] = useState<string>("");
   const [todos, setTodos] = useState<Todo[]>([]);
+
+  // 1
+  useEffect(() => {
+    const savedTodos = localStorage.getItem("todos");
+    if (savedTodos) {
+      setTodos(JSON.parse(savedTodos));
+    }
+  }, []);
+
+  // 2
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   const addTodo = (e: React.FormEvent) => {
     e.preventDefault();
